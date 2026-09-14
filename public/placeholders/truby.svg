@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Трубы">
+  <rect width="400" height="400" fill="#eff6ff"/>
+  <circle cx="200" cy="168" r="84" fill="#2563eb"/>
+  <text x="200" y="168" dominant-baseline="central" text-anchor="middle" font-family="system-ui,Segoe UI,Roboto,sans-serif" font-size="56" font-weight="800" fill="#ffffff">ТР</text>
+  <text x="200" y="300" text-anchor="middle" font-family="system-ui,Segoe UI,Roboto,sans-serif" font-size="30" font-weight="700" fill="#1e3a8a">Трубы</text>
+</svg>

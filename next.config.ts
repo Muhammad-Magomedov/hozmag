@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // mongoose/bcryptjs — серверные пакеты, не бандлим их.
+  serverExternalPackages: ["mongoose", "bcryptjs"],
 };
 
 export default nextConfig;

@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ТеплоСнаб — интернет-магазин промышленного оборудования
 
-## Getting Started
+Магазин полипропиленовых труб, котлов, горелок, фитингов, радиаторов и насосов.
+Витрина с каталогом, корзиной и оформлением заказа + админ-панель с ролями.
 
-First, run the development server:
+## Стек
 
+- **Next.js 16** (App Router) + **TypeScript** + **React 19**
+- **MongoDB** + **Mongoose**
+- **NextAuth v5 (Auth.js)** — авторизация, роли `superadmin / admin / customer`
+- **shadcn/ui** + **Tailwind CSS v4**
+- **Zustand** (корзина), **react-hook-form + zod** (формы), **bcryptjs** (пароли)
+
+## Возможности
+
+**Витрина**
+- Главная с товарами, hero-баннером, блоками «Рекомендуемые» и «Товары со скидкой»
+- Хедер: название магазина, навигация по категориям, поиск, иконка корзины
+- Панель сортировки и фильтров под хедером (категория, цена, бренд, наличие, скидка)
+- Страница товара с галереей, характеристиками и рекомендуемыми товарами
+- Страница скидок, корзина, оформление заказа
+- Регистрация и вход
+
+**Админ-панель** (`/admin`)
+- Дашборд со статистикой
+- CRUD товаров с фото (загрузка на сервер), гибкими характеристиками (диаметр, размер и т.д. — шаблоны по категориям), скидками и флагом «Хит»
+- CRUD категорий
+- CRUD пользователей с иерархией прав: **супер-админ** создаёт **админов с ограниченными правами** (products/categories/users/orders), обычный админ управляет только покупателями
+
+## Запуск
+
+### 1. Зависимости
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. MongoDB
+Нужна база MongoDB. Варианты:
+- **Docker:** `docker run -d -p 27017:27017 --name hozmag-mongo mongo:7`
+- **Локально:** установить MongoDB Community Server
+- **Облако:** бесплатный кластер [MongoDB Atlas](https://www.mongodb.com/atlas)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Переменные окружения
+Файл `.env.local` уже создан с локальной строкой подключения и сгенерированным `AUTH_SECRET`.
+Если используете Atlas — замените `MONGODB_URI`. Шаблон — в `.env.example`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Тестовые данные
+```bash
+npm run seed
+```
+Создаёт 6 категорий, ~18 товаров и аккаунты:
 
-## Learn More
+| Роль | Email | Пароль |
+|------|-------|--------|
+| Супер-админ | `admin@teplosnab.ru` | `admin123` |
+| Админ (товары+категории) | `manager@teplosnab.ru` | `manager123` |
+| Покупатель | `client@teplosnab.ru` | `client123` |
 
-To learn more about Next.js, take a look at the following resources:
+### 5. Дев-сервер
+```bash
+npm run dev
+```
+→ http://localhost:3000 — магазин, http://localhost:3000/admin — админка.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Скрипты
+- `npm run dev` — дев-сервер
+- `npm run build` / `npm start` — прод-сборка и запуск
+- `npm run seed` — заполнить БД примерами
+- `npm run typecheck` — проверка типов
+- `npm run lint` — линтер
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Структура
+```
+src/
+├── app/
+│   ├── (shop)/        витрина: главная, товар, корзина, скидки
+│   ├── (auth)/        вход и регистрация
+│   ├── admin/         админ-панель (защищена по роли)
+│   └── api/           REST: products, categories, users, orders, upload, auth
+├── components/        shop/ (витрина), admin/ (админка), ui/ (shadcn)
+├── lib/               db, auth-хелперы, products/categories/admin выборки, validation
+├── models/            Mongoose: User, Category, Product, Order
+├── store/             zustand-корзина
+└── types/             общие типы + аугментация next-auth
+```
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Примечания
+- Загруженные фото товаров лежат в `public/uploads` (в git не коммитятся). На бессерверном хостинге (Vercel) файловая система эфемерна — для прода нужен S3/Cloudinary.
+- E2EE и платёжный шлюз не подключены — оформление заказа сохраняет заявку в БД.
+- Node 20.19+ рекомендуется (mongoose 8). На 20.10 работает с предупреждением engine.
