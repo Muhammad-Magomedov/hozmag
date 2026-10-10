@@ -76,7 +76,10 @@ export function Footer({ categories }: { categories: CategoryDTO[] }) {
         </div>
       </div>
       <div className="border-t py-4 text-center text-xs text-muted-foreground">
-        © {year} {SITE.name}. Все права защищены.
+        © {year} {SITE.name}. Все права защищены. ·{" "}
+        <Link href="/credits" className="hover:text-foreground">
+          Источники изображений
+        </Link>
       </div>
     </footer>
   );

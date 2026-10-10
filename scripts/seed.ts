@@ -67,7 +67,7 @@ async function main() {
     price: opts.price,
     oldPrice: opts.oldPrice ?? null,
     stock: opts.stock,
-    images: [`/placeholders/${opts.cat}.svg`],
+    images: [`/products/${opts.cat}.jpg`],
     specs: opts.specs,
     featured: opts.featured ?? false,
     isActive: true,
